@@ -212,7 +212,7 @@ public class Display extends javax.swing.JPanel {
             fSource.newPixels(column,row,TILE_WIDTH,TILE_HEIGHT);
             //System.out.println("Doing new pixel square at " + row + "," + column);
             //fSource.newPixels();
-        } catch (Exception ex) { System.err.println(ex); ex.printStackTrace(); }
+        } catch (Exception ex) { System.err.println("Possible file corruption!"); ex.printStackTrace(); }
     }
     
     public void setEntireTileColorValue(int tileRow, int tileColumn, int colorIndex)

@@ -66,9 +66,9 @@ public class MusicPlayer implements Runnable, BasicPlayerListener {
             this.player.open(new BufferedInputStream(this.audioFileInputStream));
             //System.out.println("Pausing the thread after open");
             //Thread.sleep(15000);
-            System.out.println("Calling play");
+            //System.out.println("Calling play");
             this.player.play();
-            System.out.println("done");
+            //System.out.println("done");
         } catch (Exception ex) {
             ex.printStackTrace(System.err);
         }

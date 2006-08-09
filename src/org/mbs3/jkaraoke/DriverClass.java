@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 package org.mbs3.jkaraoke;
+
+import javax.swing.JFileChooser;
 import java.io.*;
 import java.util.*;
 import java.util.zip.*;
@@ -35,15 +37,22 @@ public class DriverClass
     public static void main (String[] args)
     {
         try {
-            File zipFileObject = new File("joel.zip");
+            JFileChooser jfc = new JFileChooser();
+            jfc.setDialogType(JFileChooser.OPEN_DIALOG);
+            int response = jfc.showOpenDialog(null);
+            if(response != JFileChooser.APPROVE_OPTION)
+                return;
+            
+            String name = jfc.getSelectedFile().getName();
+            if(!name.endsWith("zip"))
+                return;
+            
+            name = name.substring(0, name.length()-4);
+            File zipFileObject = jfc.getSelectedFile();
             ZipFile zf = new ZipFile(zipFileObject);
             
-            ZipEntry zeMusicFile = zf.getEntry("joel.mp3");
-            ZipEntry zeCdgFile = zf.getEntry("joel.cdg");
-            
-            Enumeration e = zf.entries();
-            while(e.hasMoreElements())
-                    System.out.println(e.nextElement());
+            ZipEntry zeMusicFile = zf.getEntry(name + ".mp3");
+            ZipEntry zeCdgFile = zf.getEntry(name + ".cdg");
             
             InputStream f  = zf.getInputStream(zeMusicFile);
             InputStream c  = zf.getInputStream(zeCdgFile);
@@ -53,9 +62,9 @@ public class DriverClass
             MusicPlayer mp = new MusicPlayer(f,zeMusicFile.getSize(), c, zeCdgFile.getSize(), dispatcher);
             kFrame.setVisible(true);
             
-            System.out.println("Creating thread");
+            //System.out.println("Creating thread");
             Thread t = new Thread(mp);
-            System.out.println("Thread sent off");
+            //System.out.println("Thread sent off");
             t.start();
 
         } catch (Exception ex) { ex.printStackTrace(System.err); }
