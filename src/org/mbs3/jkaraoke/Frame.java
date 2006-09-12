@@ -15,6 +15,8 @@
  */
 package org.mbs3.jkaraoke;
 import java.awt.BorderLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import javax.swing.WindowConstants;
 
 
@@ -51,6 +53,11 @@ public class Frame extends javax.swing.JFrame {
         try {
             setSize(Display.CDG_FULL_WIDTH, Display.CDG_FULL_HEIGHT);
             setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			this.addComponentListener(new ComponentAdapter() {
+				public void componentResized(ComponentEvent evt) {
+					rootComponentResized(evt);
+				}
+			});
             {
                 kPanel1 = new Display();
                 getContentPane().add(getPanel(), BorderLayout.CENTER);
@@ -64,5 +71,10 @@ public class Frame extends javax.swing.JFrame {
     public Display getPanel() {
         return kPanel1;
     }
+    
+	private void rootComponentResized(ComponentEvent evt) {
+		System.out.println("this.componentResized, event=" + evt);
+		this.kPanel1.setSize(this.getSize());
+	}
 
 }

@@ -2,8 +2,10 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Jakarta Commons Logging"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Java Zoom MP3-SPI"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jlGui Basic Player"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/MpegAudioSPI1.9.4/lib/tritonus_share.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/MpegAudioSPI1.9.4/mp3spi1.9.4.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/MpegAudioSPI1.9.4/lib/jl1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/commons-logging-1.1/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/BasicPlayer2.3/basicplayer2.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

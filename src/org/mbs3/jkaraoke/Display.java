@@ -19,6 +19,8 @@ package org.mbs3.jkaraoke;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.image.*;
 
 /**
@@ -114,6 +116,11 @@ public class Display extends javax.swing.JPanel {
     private void initGUI() {
         try {
             setPreferredSize(new Dimension(CDG_FULL_WIDTH, CDG_FULL_HEIGHT));
+			this.addComponentListener(new ComponentAdapter() {
+				public void componentResized(ComponentEvent evt) {
+					rootComponentResized(evt);
+				}
+			});
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -283,5 +290,12 @@ public class Display extends javax.swing.JPanel {
 
         return colorBytes;
     }
+    
+	private void rootComponentResized(ComponentEvent evt) {
+		// TODO: Optimize this -- it hurts performance!
+		System.out.println("this.componentResized, event=" + evt);
+		if(fSource != null)
+	         fImage = (createImage (fSource)).getScaledInstance(CDG_FULL_WIDTH*2, CDG_FULL_HEIGHT*2, Image.SCALE_AREA_AVERAGING);
+	}
 
 }
