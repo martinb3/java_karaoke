@@ -293,9 +293,9 @@ public class Display extends javax.swing.JPanel {
     
 	private void rootComponentResized(ComponentEvent evt) {
 		// TODO: Optimize this -- it hurts performance!
-		System.out.println("this.componentResized, event=" + evt);
-		if(fSource != null)
-	         fImage = (createImage (fSource)).getScaledInstance(CDG_FULL_WIDTH*2, CDG_FULL_HEIGHT*2, Image.SCALE_AREA_AVERAGING);
+		//System.out.println("this.componentResized, event=" + evt);
+		//if(fSource != null)
+	    //     fImage = (createImage (fSource)).getScaledInstance(CDG_FULL_WIDTH*2, CDG_FULL_HEIGHT*2, Image.SCALE_AREA_AVERAGING);
 	}
 
 }

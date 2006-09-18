@@ -27,17 +27,15 @@ import javax.swing.SwingUtilities;
 public class Dispatcher
 {
 
-    Frame               kFrame;
-    Display               kPanel;
+    Display               display;
 
     /**
      * 
      */
-    public Dispatcher (Frame k)
+    public Dispatcher (Display display)
     {
         super();
-        this.kFrame = k;
-        this.kPanel = k.getPanel();
+        this.display = display;
     }
 
     public void dispatchInstruction (Packet cdgPacket)
@@ -60,7 +58,7 @@ public class Dispatcher
 
                 public void run ()
                 {
-                    kPanel.setBackgroundColor(colorIndex);
+                    display.setBackgroundColor(colorIndex);
                 }
             };
             try
@@ -86,7 +84,7 @@ public class Dispatcher
 
                 public void run ()
                 {
-                    kPanel.setBorderColor(c);
+                    display.setBorderColor(c);
                 }
             };
             try
@@ -118,7 +116,7 @@ public class Dispatcher
 
                 public void run ()
                 {
-                    kPanel.setTileColor(row, column, color0, color1, tp, flag);
+                    display.setTileColor(row, column, color0, color1, tp, flag);
                 }
             };
             try
@@ -214,7 +212,7 @@ public class Dispatcher
 
                 public void run ()
                 {
-                    kPanel.loadColorTable(ptr, flag);
+                    display.loadColorTable(ptr, flag);
                 }
             };
             try

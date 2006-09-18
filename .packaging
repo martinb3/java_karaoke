@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurations>
+<archive destination="" exploded="false" name="jkaraoke.jar" used="true">
+<folder excludes="" includes="**/*.class" location="bin" name="bin" prefix="" project="" projectLocation="/bin" used="true"/>
+<file location="src/META-INF/MANIFEST.MF" name="MANIFEST.MF" prefix="META-INF" project="" projectLocation="/src/META-INF/MANIFEST.MF" used="true"/>
+<file location="C:/Program Files/Java/MpegAudioSPI1.9.4/mp3spi1.9.4.jar" name="mp3spi1.9.4.jar" prefix="" used="true"/>
+<file location="C:/Program Files/Java/MpegAudioSPI1.9.4/lib/tritonus_share.jar" name="tritonus_share.jar" prefix="" used="true"/>
+<file location="C:/Program Files/Java/MpegAudioSPI1.9.4/lib/jl1.0.jar" name="jl1.0.jar" prefix="" used="true"/>
+<file location="C:/Program Files/Java/BasicPlayer2.3/basicplayer2.3.jar" name="basicplayer2.3.jar" prefix="" used="true"/>
+<file location="C:/Program Files/Java/commons-logging-1.1/commons-logging-1.1.jar" name="commons-logging-1.1.jar" prefix="" used="true"/>
+</archive>
+</configurations>

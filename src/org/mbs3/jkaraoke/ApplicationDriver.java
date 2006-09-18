@@ -32,7 +32,7 @@ import javax.sound.sampled.*;
  *
  * TODO None yet.
  */
-public class DriverClass
+public class ApplicationDriver
 {
     public static void main (String[] args)
     {
@@ -58,8 +58,8 @@ public class DriverClass
             InputStream c  = zf.getInputStream(zeCdgFile);
             
             Frame kFrame = new Frame();
-            Dispatcher dispatcher = new Dispatcher(kFrame);
-            MusicPlayer mp = new MusicPlayer(f,zeMusicFile.getSize(), c, zeCdgFile.getSize(), dispatcher);
+            Dispatcher dispatcher = new Dispatcher(kFrame.getPanel());
+            MusicPlayer mp = new MusicPlayer(f, c, dispatcher);
             kFrame.setVisible(true);
             
             //System.out.println("Creating thread");

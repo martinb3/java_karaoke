@@ -1,0 +1,2 @@
+Main-Class: org/mbs3/jkaraoke/ApplicationDriver
+Class-Path: tritonus_share.jar mp3spi1.9.4.jar jl1.0.jar commons-logging-1.1.jar basicplayer2.3.jar

@@ -14,115 +14,82 @@
  *  limitations under the License.
  */
 package org.mbs3.jkaraoke;
+
 import java.io.*;
 import javazoom.jlgui.basicplayer.*;
 
 import java.util.*;
- 
+
 public class MusicPlayer implements Runnable, BasicPlayerListener {
-    
-    private InputStream audioFileInputStream;
-    private InputStream cdgFileInputStream;
-    private long asize, csize;
-    
-    PipedInputStream in; //= new PipedInputStream();
-    PipedOutputStream out; //= new PipedOutputStream(in);
-    
-    private Dispatcher dispatcher;
-    private long secondsAmount = 0;
 
-    
-    // 75 sectors per second
-    // 4 packets per sector
-    final private double cdgPacketsPerMicroSecond = (75.0d*4.0d)/(1000000.0d);
+	private InputStream audioFileInputStream;
 
-    private int currentPacketIndex = 0;
-    private int cdgPacketsTotal;
-    
-    private BasicPlayer player;
-    private BasicController controller;
-    private Map audioInfo;
-    
-    Packet [] cdgPackets;
-    
-    public MusicPlayer (InputStream audioFile, long asize, InputStream cdgFile, long csize, Dispatcher d)
-    {
-        this.audioFileInputStream = audioFile; this.asize = asize;
-        this.cdgFileInputStream = cdgFile; this.csize = csize;
-        
-        this.cdgPacketsTotal = (int)csize/24;     // 24 bytes per packet -
-                                                  // this file should only
-                                                  // be cdg packets
-        this.player = new BasicPlayer();
-        this.dispatcher = d;
-        setupCDG();
-    }
-    
-    public void run() {
-        try {
-            this.player.addBasicPlayerListener(this);
-            //System.out.println("Pausing the thread after addBasicListener");
-            //Thread.sleep(15000);
-            this.player.open(new BufferedInputStream(this.audioFileInputStream));
-            //System.out.println("Pausing the thread after open");
-            //Thread.sleep(15000);
-            //System.out.println("Calling play");
-            this.player.play();
-            //System.out.println("done");
-        } catch (Exception ex) {
-            ex.printStackTrace(System.err);
-        }
-        
-        
-    }
+	private InputStream cdgFileInputStream;
 
-    public void setupCDG ()
+	BufferedInputStream cdfFileInputStream;
+
+	// private long asize, csize;
+
+	PipedInputStream in; // = new PipedInputStream();
+
+	PipedOutputStream out; // = new PipedOutputStream(in);
+
+	private Dispatcher dispatcher;
+
+	private long secondsAmount = 0;
+
+	// 75 sectors per second
+	// 4 packets per sector
+	final private double cdgPacketsPerMicroSecond = (75.0d * 4.0d) / (1000000.0d);
+
+	private int currentPacketIndex = 0;
+
+	//private int cdgPacketsTotal;
+
+	private BasicPlayer player;
+
+	private BasicController controller;
+
+	private Map audioInfo;
+
+	Packet[] cdgPackets;
+
+	public MusicPlayer(InputStream audioFile, InputStream cdgFile, Dispatcher d) {
+		this.audioFileInputStream = audioFile; // this.asize = asize;
+		this.cdgFileInputStream = cdgFile; // this.csize = csize;
+
+		// this.cdgPacketsTotal = (int)csize/24; // 24 bytes per packet -
+		// this file should only
+		// be cdg packets
+		this.player = new BasicPlayer();
+		this.dispatcher = d;
+		setupCDG();
+	}
+
+	public void run() {
+		try {
+			this.player.addBasicPlayerListener(this);
+			// System.out.println("Pausing the thread after addBasicListener");
+			// Thread.sleep(15000);
+			this.player
+					.open(new BufferedInputStream(this.audioFileInputStream));
+			// System.out.println("Pausing the thread after open");
+			// Thread.sleep(15000);
+			// System.out.println("Calling play");
+			this.player.play();
+			// System.out.println("done");
+		} catch (Exception ex) {
+			ex.printStackTrace(System.err);
+		}
+
+	}
+
+	public void setupCDG ()
     {
         try
         {
-            BufferedInputStream cdfFileInputStream = new BufferedInputStream(
-                    cdgFileInputStream);
-
-            long length = this.csize;
-            if (length > Integer.MAX_VALUE)
-            {
-                throw new RuntimeException("File too large");
-            }
             
-            byte [] cdgBytes = new byte[(int) length];
-            int offset = 0;
-            int numRead = 0;
-            while (offset < cdgBytes.length
-                    && (numRead = cdfFileInputStream.read(cdgBytes, offset,
-                            cdgBytes.length - offset)) >= 0)
-            {
-                offset += numRead;
-            }
-
-            // Ensure all the bytes have been read in
-            if (offset < cdgBytes.length)
-            {
-                throw new IOException("Could not completely read cdg file stream");
-            }
-            cdfFileInputStream.close();
-
-            byte[] packet = new byte[24];
-            cdgPackets = new Packet[(cdgBytes.length / 24)];
-            int packetIndex = 0;
-            
-            for (int j = 0; j < cdgBytes.length; j+=24)
-            {
-                System.arraycopy(cdgBytes, j, packet, 0, 24);
-                Packet p = new Packet(packet);
-                cdgPackets[packetIndex] = p;
-                packetIndex++;
-            }
-
-            
-            System.out.println(cdgBytes.length + " bytes or "
-                    + (cdgBytes.length / 24) + " packets of CDG");
-
-            
+        	cdfFileInputStream = new BufferedInputStream(cdgFileInputStream);
         }
         catch (Exception ex)
         {
@@ -131,146 +98,158 @@ public class MusicPlayer implements Runnable, BasicPlayerListener {
 
     }
 
-    public void pollCDG(long microSeconds)
-    {
-        long expectedPacketNo = (long)(cdgPacketsPerMicroSecond*microSeconds);
-        
-        //System.out.println("pollCDG -- next packet is " + cdgPacketsConsumed + " and we should have processed at least " + expectedPacketNo);
-        
-        int thisRound = 0;
-        while(  
-                this.currentPacketIndex <= cdgPacketsTotal && 
-                this.currentPacketIndex <= expectedPacketNo
-                )
-        {
-            
+	public void pollCDG(long microSeconds) {
+		long expectedPacketNo = (long) (cdgPacketsPerMicroSecond * microSeconds);
 
-            Packet p = cdgPackets[currentPacketIndex];
-            if (p.getCommand() == Packet.SC_CDG_COMMAND)
-            {
-                //System.out.println(i + ": " + p);
-                dispatcher.dispatchInstruction(p);
-                //Thread.sleep(10);
-            }
-            //System.out.println("Packet number " + thisRound + " at microseconds=" + microSeconds + ", next packet is " + cdgPacketsConsumed + " and we should have processed at least (" + cdgPacketsPerMicroSecond + "*" + microSeconds + ") = " + expectedPacketNo);
-            this.currentPacketIndex++; thisRound++;
-        }
-        //System.out.println("Leaving loop");
-    }
-    
-    public void opened(Object o, Map p)
-    {
-        audioInfo = p;
-        System.err.println(p.toString());
-    }
-    
-    public void setController(BasicController controller)
-    {
-        System.err.println("setController");
-        this.controller = controller;
-    }
-    
-    public void stateUpdated(BasicPlayerEvent event) 
-    {
-        System.err.println("stateUpdated");
-    }
-    
-    public void progress(int bytesread, long microseconds, byte[] pcmdata, java.util.Map properties)
-    {
-        int byteslength = -1;
-        long total = -1;
-        // If it fails then try again with JavaSound SPI.
-        if (total <=0) total = (long) Math.round(getTimeLengthEstimation(audioInfo)/1000);
-        // If it fails again then it might be stream => Total = -1  
-        if (total <=0) total = -1;
-        if (audioInfo.containsKey("audio.length.bytes"))
-        {
-            byteslength = ((Integer) audioInfo.get("audio.length.bytes")).intValue();           
-        }
-        float progress = -1.0f;
-        if ((bytesread > 0) && ((byteslength > 0))) progress = bytesread*1.0f/byteslength*1.0f; 
-        
-        if (audioInfo.containsKey("audio.type"))
-        {
-            String audioformat = (String) audioInfo.get("audio.type");
-            if (audioformat.equalsIgnoreCase("mp3"))
-            {
-                //if (properties.containsKey("mp3.position.microseconds")) secondsAmount = (long) Math.round(((Long) properties.get("mp3.position.microseconds")).longValue()/1000000);
-                // Equalizer
-                if (total > 0) secondsAmount = (long) (total*progress);
-                else secondsAmount = -1;
-            }
-            else if (audioformat.equalsIgnoreCase("wave"))
-            {
-                secondsAmount = (long) (total*progress);            
-            }
-            else
-            {
-                secondsAmount = (long) Math.round(microseconds/1000000);
-            } 
-        }
-        else
-        {
-            secondsAmount = (long) Math.round(microseconds/1000000);
-        }       
-        if (secondsAmount < 0) secondsAmount = (long) Math.round(microseconds/1000000);
+		// System.out.println("pollCDG -- next packet is " + cdgPacketsConsumed
+		// + " and we should have processed at least " + expectedPacketNo);
 
-        pollCDG(microseconds);
-    }
-    
-    
-    /**
-     * Try to compute time length in milliseconds.
-     */
-    public long getTimeLengthEstimation(Map properties)
-    {
-      long milliseconds = -1;
-      int byteslength = -1;
-      if (properties != null)
-      {
-        if (properties.containsKey("audio.length.bytes"))
-        {
-          byteslength = ((Integer) properties.get("audio.length.bytes")).intValue();            
-        }
-        if (properties.containsKey("duration"))
-        {
-            milliseconds = (int) (((Long) properties.get("duration")).longValue())/1000;            
-        }
-        else
-        {
-            // Try to compute duration
-            int bitspersample = -1;
-            int channels = -1;
-            float samplerate = -1.0f;
-            int framesize = -1;          
-            if (properties.containsKey("audio.samplesize.bits"))
-            {
-                bitspersample = ((Integer) properties.get("audio.samplesize.bits")).intValue(); 
-            }
-            if (properties.containsKey("audio.channels"))
-            {
-                channels = ((Integer) properties.get("audio.channels")).intValue(); 
-            }
-            if (properties.containsKey("audio.samplerate.hz"))
-            {
-                samplerate = ((Float) properties.get("audio.samplerate.hz")).floatValue(); 
-            }
-            if (properties.containsKey("audio.framesize.bytes"))
-            {
-                framesize = ((Integer) properties.get("audio.framesize.bytes")).intValue(); 
-            }
-            if (bitspersample > 0)
-            {
-                milliseconds = (int) (1000.0f*byteslength/(samplerate * channels * (bitspersample/8))); 
-            } 
-            else
-            {
-                milliseconds = (int)(1000.0f*byteslength/(samplerate*framesize)); 
-            }           
-        }
-      }
-      return milliseconds;
-    }
+		int thisRound = 0;
+		while (this.currentPacketIndex <= expectedPacketNo) {
 
-    
+	        byte[] packet = getNextPacket();
+            Packet p = new Packet(packet);
+
+            if (p.getCommand() == Packet.SC_CDG_COMMAND) {
+				// System.out.println(i + ": " + p);
+				dispatcher.dispatchInstruction(p);
+				// Thread.sleep(10);
+			}
+			// System.out.println("Packet number " + thisRound + " at
+			// microseconds=" + microSeconds + ", next packet is " +
+			// cdgPacketsConsumed + " and we should have processed at least (" +
+			// cdgPacketsPerMicroSecond + "*" + microSeconds + ") = " +
+			// expectedPacketNo);
+			this.currentPacketIndex++;
+			thisRound++;
+		}
+		// System.out.println("Leaving loop");
+	}
+
+	public void opened(Object o, Map p) {
+		audioInfo = p;
+		System.err.println(p.toString());
+	}
+
+	public void setController(BasicController controller) {
+		System.err.println("setController");
+		this.controller = controller;
+	}
+
+	public void stateUpdated(BasicPlayerEvent event) {
+		System.err.println("stateUpdated");
+	}
+
+	private byte[] getNextPacket() {
+		byte[] cdgBytes = new byte[24];
+		int offset = 0;
+		int numRead = 0;
+
+		try {
+			while (offset < cdgBytes.length
+					&& (numRead = cdfFileInputStream.read(cdgBytes, offset,
+							cdgBytes.length - offset)) >= 0) {
+				offset += numRead;
+			}
+			if (cdfFileInputStream.available() <= 0)
+				cdfFileInputStream.close();
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		return cdgBytes;
+	}
+
+	public void progress(int bytesread, long microseconds, byte[] pcmdata,
+			java.util.Map properties) {
+		int byteslength = -1;
+		long total = -1;
+		// If it fails then try again with JavaSound SPI.
+		if (total <= 0)
+			total = (long) Math
+					.round(getTimeLengthEstimation(audioInfo) / 1000);
+		// If it fails again then it might be stream => Total = -1
+		if (total <= 0)
+			total = -1;
+		if (audioInfo.containsKey("audio.length.bytes")) {
+			byteslength = ((Integer) audioInfo.get("audio.length.bytes"))
+					.intValue();
+		}
+		float progress = -1.0f;
+		if ((bytesread > 0) && ((byteslength > 0)))
+			progress = bytesread * 1.0f / byteslength * 1.0f;
+
+		if (audioInfo.containsKey("audio.type")) {
+			String audioformat = (String) audioInfo.get("audio.type");
+			if (audioformat.equalsIgnoreCase("mp3")) {
+				// if (properties.containsKey("mp3.position.microseconds"))
+				// secondsAmount = (long) Math.round(((Long)
+				// properties.get("mp3.position.microseconds")).longValue()/1000000);
+				// Equalizer
+				if (total > 0)
+					secondsAmount = (long) (total * progress);
+				else
+					secondsAmount = -1;
+			} else if (audioformat.equalsIgnoreCase("wave")) {
+				secondsAmount = (long) (total * progress);
+			} else {
+				secondsAmount = (long) Math.round(microseconds / 1000000);
+			}
+		} else {
+			secondsAmount = (long) Math.round(microseconds / 1000000);
+		}
+		if (secondsAmount < 0)
+			secondsAmount = (long) Math.round(microseconds / 1000000);
+
+		pollCDG(microseconds);
+	}
+
+	/**
+	 * Try to compute time length in milliseconds.
+	 */
+	public long getTimeLengthEstimation(Map properties) {
+		long milliseconds = -1;
+		int byteslength = -1;
+		if (properties != null) {
+			if (properties.containsKey("audio.length.bytes")) {
+				byteslength = ((Integer) properties.get("audio.length.bytes"))
+						.intValue();
+			}
+			if (properties.containsKey("duration")) {
+				milliseconds = (int) (((Long) properties.get("duration"))
+						.longValue()) / 1000;
+			} else {
+				// Try to compute duration
+				int bitspersample = -1;
+				int channels = -1;
+				float samplerate = -1.0f;
+				int framesize = -1;
+				if (properties.containsKey("audio.samplesize.bits")) {
+					bitspersample = ((Integer) properties
+							.get("audio.samplesize.bits")).intValue();
+				}
+				if (properties.containsKey("audio.channels")) {
+					channels = ((Integer) properties.get("audio.channels"))
+							.intValue();
+				}
+				if (properties.containsKey("audio.samplerate.hz")) {
+					samplerate = ((Float) properties.get("audio.samplerate.hz"))
+							.floatValue();
+				}
+				if (properties.containsKey("audio.framesize.bytes")) {
+					framesize = ((Integer) properties
+							.get("audio.framesize.bytes")).intValue();
+				}
+				if (bitspersample > 0) {
+					milliseconds = (int) (1000.0f * byteslength / (samplerate
+							* channels * (bitspersample / 8)));
+				} else {
+					milliseconds = (int) (1000.0f * byteslength / (samplerate * framesize));
+				}
+			}
+		}
+		return milliseconds;
+	}
+
 }
