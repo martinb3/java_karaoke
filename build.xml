@@ -8,7 +8,6 @@
 			<zipfileset src="C:/Program Files/Java/BasicPlayer2.3/basicplayer2.3.jar" />
 			<zipfileset src="C:/Program Files/Java/commons-logging-1.1/commons-logging-1.1.jar" />
 			<zipfileset dir="bin" includes="**/*.class" />
-			<fileset file="testsong.zip"/>
 		</jar>
 	</target>
 </project>
