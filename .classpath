@@ -2,10 +2,10 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Program Files/Java/MpegAudioSPI1.9.4/lib/tritonus_share.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/Java/MpegAudioSPI1.9.4/mp3spi1.9.4.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/Java/MpegAudioSPI1.9.4/lib/jl1.0.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/Java/commons-logging-1.1/commons-logging-1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/Java/BasicPlayer2.3/basicplayer2.3.jar"/>
+	<classpathentry kind="lib" path="/home/martin/java/libs/tritonus_mp3-0.3.6.jar"/>
+	<classpathentry kind="lib" path="/home/martin/java/libs/MpegAudioSPI1.9.4/mp3spi1.9.4.jar"/>
+	<classpathentry kind="lib" path="/home/martin/java/libs/jlgui3.0/jlgui3.0.jar"/>
+	<classpathentry kind="lib" path="/home/martin/java/libs/commons-logging-1.1/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="/home/martin/java/libs/BasicPlayer3.0/basicplayer3.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
