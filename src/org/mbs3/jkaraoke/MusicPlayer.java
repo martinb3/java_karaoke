@@ -111,15 +111,11 @@ public class MusicPlayer implements Runnable, BasicPlayerListener {
             Packet p = new Packet(packet);
 
             if (p.getCommand() == Packet.SC_CDG_COMMAND) {
-				// System.out.println(i + ": " + p);
+				System.out.println(p);
 				dispatcher.dispatchInstruction(p);
 				// Thread.sleep(10);
 			}
-			// System.out.println("Packet number " + thisRound + " at
-			// microseconds=" + microSeconds + ", next packet is " +
-			// cdgPacketsConsumed + " and we should have processed at least (" +
-			// cdgPacketsPerMicroSecond + "*" + microSeconds + ") = " +
-			// expectedPacketNo);
+			System.out.println("Packet number " + thisRound + " at microseconds=" + microSeconds + ", and we should have processed at least (" + cdgPacketsPerMicroSecond + "*" + microSeconds + ") = " + expectedPacketNo);
 			this.currentPacketIndex++;
 			thisRound++;
 		}

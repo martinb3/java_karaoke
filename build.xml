@@ -1,15 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Packaging" default="jar">
+    <path id="classpath">
+        <fileset dir="." includes="*.jar"/>
+    </path>
+
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="bin"/>
+        <javac srcdir="src" destdir="bin" classpathref="classpath" />
+    </target>
+
 	<target name="jar" description="jkaraoke.jar">
 		<jar destfile="jkaraoke.jar" manifest="src/META-INF/MANIFEST.MF">
-			<zipfileset src="C:/Program Files/Java/MpegAudioSPI1.9.4/mp3spi1.9.4.jar"/>
-			<zipfileset src="C:/Program Files/Java/MpegAudioSPI1.9.4/lib/tritonus_share.jar" />
-			<zipfileset src="C:/Program Files/Java/MpegAudioSPI1.9.4/lib/jl1.0.jar" />
-			<zipfileset src="C:/Program Files/Java/BasicPlayer2.3/basicplayer2.3.jar" />
-			<zipfileset src="C:/Program Files/Java/commons-logging-1.1/commons-logging-1.1.jar" />
+			<zipfileset src="MpegAudioSPI1.9.4/mp3spi1.9.4.jar"/>
+			<zipfileset src="MpegAudioSPI1.9.4/lib/tritonus_share.jar" />
+			<zipfileset src="MpegAudioSPI1.9.4/lib/jl1.0.jar" />
+			<zipfileset src="basicplayer2.3.jar" />
+			<zipfileset src="commons-logging-1.1.jar" />
 			<zipfileset dir="bin" includes="**/*.class" />
 			<fileset file="LICENSE"/>
 			<fileset file="NOTICE"/>
 		</jar>
 	</target>
+    <target name="run">
+        <java jar="jkaraoke.jar" fork="true">
+            <classpath>
+                <path refid="classpath"/>
+                <path location="jkaraoke.jar"/>
+            </classpath>
+        </java>
+    </target>
 </project>
