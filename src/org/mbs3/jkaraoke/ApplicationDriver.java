@@ -45,7 +45,10 @@ public class ApplicationDriver
             
             String name = jfc.getSelectedFile().getName();
             if(!name.endsWith("zip"))
+            {
+                //System.out.println("Need to use a zip file");
                 return;
+            }
             
             name = name.substring(0, name.length()-4);
             File zipFileObject = jfc.getSelectedFile();
