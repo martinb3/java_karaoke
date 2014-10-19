@@ -12,6 +12,6 @@ A neat little library for playing MP3+CDG zipfiles.
 
 ## Building
 
-ant compile
-ant jar
-ant run
+    ant compile
+    ant jar
+    ant run
